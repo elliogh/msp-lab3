@@ -38,14 +38,18 @@
     <!-- test - запуск junit-тестов проекта -->
     <!-- Перед запуском тестов необходимо осуществить сборку проекта (цель build) -->
     <target name="test" depends="build">
+        <echo>${test.class}</echo>
         <junit printsummary="on">
             <classpath>
                 <fileset dir="${junit.dir}" includes="junit-4.13.2.jar"/>
                 <pathelement location="${classes.dir}"/>
             </classpath>
+            <formatter type="plain" />
+
             <test name="${test.class}"/>
         </junit>
     </target>
+
 
 <!--     scp - перемещение собранного проекта по scp на выбранный сервер по завершению сборки-->
 <!--     Предварительно необходимо выполнить сборку проекта (цель build)-->

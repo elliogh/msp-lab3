@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-class HitCheckerTest {
+public class HitCheckerTest {
     private HitChecker hitChecker;
 
     @Before
@@ -15,6 +15,11 @@ class HitCheckerTest {
 
     @Test
     public void first(){
-        assertFalse(hitChecker.checkArea(1, 1, 5));
+        assertEquals(hitChecker.checkArea(1, 1, 5), true);
+    }
+
+    @Test
+    public void second(){
+        assertEquals(hitChecker.checkArea(-4, 2, 10), true);
     }
 }
