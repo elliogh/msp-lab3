@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- MANIFEST.MF должен содержать информацию о версии и о запускаемом классе -->
+
+<project name="lab3" default="build">
+    <property file="build.properties"/>
+    <property environment="env"/>
+
+    <!-- clean - удаление скомпилированных классов проекта и всех временных файлов (если они есть) -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <!-- compile - компиляция исходных кодов проекта -->
+    <target name="compile" depends="clean">
+        <mkdir dir="${classes.dir}"/>
+        <javac target="1.8" source="1.8" srcdir="${src.dir}" destdir="${classes.dir}" encoding="utf-8"/>
+
+        <mkdir dir="${classes.dir}/lib"/>
+
+    </target>
+
+    <!-- build - компиляция исходных кодов проекта и их упаковка в исполняемый jar-архив -->
+    <!-- Компиляцию исходных кодов реализовать посредством вызова цели compile -->
+    <target name="build" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${project.name}.jar" basedir="${classes.dir}" excludes="*Test.class">
+            <fileset dir="${jar.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+            <manifest>
+                <attribute name="Version" value="${version}"/>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- test - запуск junit-тестов проекта -->
+    <!-- Перед запуском тестов необходимо осуществить сборку проекта (цель build) -->
+    <target name="test" depends="build">
+        <junit printsummary="on">
+            <classpath>
+                <fileset dir="${junit.dir}" includes="junit-4.13.2.jar"/>
+                <pathelement location="${classes.dir}"/>
+            </classpath>
+            <test name="${test.class}"/>
+        </junit>
+    </target>
+
+<!--     scp - перемещение собранного проекта по scp на выбранный сервер по завершению сборки-->
+<!--     Предварительно необходимо выполнить сборку проекта (цель build)-->
+    <target name="scp" depends="build">
+        <scp file="${jar.dir}/${project.name}.jar"
+             todir="${env.SCP_USER}@${scp.host}:/home/${env.SCP_USER}/"
+             port="${scp.port}" password="${env.SCP_PASSWORD}"/>
+    </target>
+
+</project>
